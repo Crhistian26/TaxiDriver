@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaxiDriver.Domain.Base;
+using TaxiDriver.Domain.Interfaces.Entities;
 
 namespace TaxiDriver.Domain.Entitys
 {

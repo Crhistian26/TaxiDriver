@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaxiDriver.Domain.Entitys;
 
-namespace TaxiDriver.Domain.Interfaces
+namespace TaxiDriver.Domain.Interfaces.Repositorys
 {
     public interface IUserRepository
     {

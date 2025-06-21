@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaxiDriver.Domain.Entitys;
+using TaxiDriver.Domain.Interfaces.Entities;
 
-namespace TaxiDriver.Domain.Interfaces
+namespace TaxiDriver.Domain.Interfaces.Repositorys
 {
     public interface IRoleRepository
     {
