@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiDriver.Persistance", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiDriver.Api", "TaxiDriver.Api\TaxiDriver.Api.csproj", "{550D8A14-C173-4AA8-AEEE-07FBF77A3A68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiDriver.Web", "TaxiDriver.Web\TaxiDriver.Web.csproj", "{71E39FB5-7F46-4A1D-B82D-C705C4EB4C30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{550D8A14-C173-4AA8-AEEE-07FBF77A3A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{550D8A14-C173-4AA8-AEEE-07FBF77A3A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{550D8A14-C173-4AA8-AEEE-07FBF77A3A68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71E39FB5-7F46-4A1D-B82D-C705C4EB4C30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71E39FB5-7F46-4A1D-B82D-C705C4EB4C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71E39FB5-7F46-4A1D-B82D-C705C4EB4C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71E39FB5-7F46-4A1D-B82D-C705C4EB4C30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
