@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace TaxiDriver.Domain.Base
 {
-    internal class Class1
+    public class BaseEntity
     {
-        public void klk()
-        {
-            try
-            {
-
-            }catch(Exception ex) {
-        }
+        public int Id { get; set; }
     }
 }
