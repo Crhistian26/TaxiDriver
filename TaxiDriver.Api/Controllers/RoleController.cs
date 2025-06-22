@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using TaxiDriver.Domain.Entitys;
 using TaxiDriver.Domain.Interfaces.Entities;
+using TaxiDriver.Domain.Interfaces.Repositorys;
 using TaxiDriver.Persistence.Repositories;
+using TaxiDriver.Persistance.Exceptions;
 
 namespace TaxiDriver.Api.Controllers
 {
@@ -12,58 +14,109 @@ namespace TaxiDriver.Api.Controllers
     [ApiController]
     public class RoleController : ControllerBase
     {
-        private readonly RoleRepository _roleRepository;
-        public RoleController()
+        private readonly IRoleRepository _roleRepository;
+        public RoleController(IRoleRepository RoleRepository)
         {
-            _roleRepository = new RoleRepository();
+            _roleRepository = RoleRepository;
         }
 
         [HttpGet("GetAll")]
         public IActionResult GetRole()
         {
-            List<Role> values = new List<Role>();
-
-            values = _roleRepository.GetAll();
-
-            if(values == null || values.Count == 0)
+            try
             {
-                return NotFound();
+                List<Role> values = new List<Role>();
+
+                values = _roleRepository.GetAll();
+
+                if (values == null || values.Count == 0)
+                {
+                    return NotFound();
+                }
+                return Ok(values);
             }
-            return Ok(values);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
         [HttpGet("Get/{id}")]
         public IActionResult GetRoleById(int id)
         {
-            Role role = new Role();
-            role = _roleRepository.GetById(id);
-
-            if (role == null)
+            try
             {
-                return NotFound();
+                if (id == 0)
+                {
+                    return BadRequest("Te falto el Id para identificar el Rol");
+                }
+                Role role = new Role();
+                role = _roleRepository.GetById(id);
+
+                return Ok(role);
             }
-            return Ok(role);
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-        [HttpPost]
+        [HttpPost("Post")]
         public IActionResult PostRole([FromBody] Role role)
         {
-            _roleRepository.Add(role);
-            return CreatedAtAction(nameof(GetRole), new { id = role.Id }, role);
+            try
+            {
+                if (role == null)
+                {
+                    return BadRequest("Falto el Role a agregar");
+                }
+                _roleRepository.Add(role);
+                return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, role);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new {error = ex.Message});
+            }
         }
 
-        [HttpPut]
+        [HttpPut("Put")]
         public IActionResult PutRole([FromBody] Role role)
         {
-            _roleRepository.Update(role);
-            return NoContent();
+            try 
+            { 
+                if (role == null)
+                {
+                    return BadRequest("Falto el Role a modificar");
+                }
+                _roleRepository.Update(role);
+                return NoContent(); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
         [HttpDelete("Delete/{id}")]
         public IActionResult DeleteRoleById(int id)
         {
-            _roleRepository.Delete(id);
-            return NoContent();
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest("Se te olvido enviar el ID.");
+                }
+                _roleRepository.Delete(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
         }
     }
 }

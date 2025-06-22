@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace TaxiDriver.Persistance.Exceptions
 {
-    internal class RepositoryErrors
+    public class RepositoryErrors : Exception
     {
+        public RepositoryErrors() { }
+        public RepositoryErrors(string message) 
+            : base(message){ }
+
+        public RepositoryErrors(string message, Exception innerException)
+            : base(message, innerException) { }
+
     }
 }

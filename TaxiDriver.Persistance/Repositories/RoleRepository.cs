@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using TaxiDriver.Domain.Entitys;
 using TaxiDriver.Domain.Interfaces.Entities;
+using TaxiDriver.Persistance.Exceptions;
 using TaxiDriver.Domain.Interfaces.Repositorys;
 using TaxiDriver.Persistance.Context;
 
@@ -15,91 +16,142 @@ namespace TaxiDriver.Persistence.Repositories
 
         public List<Role> GetAll()
         {
-            var roles = new List<Role>();
-
-            using (var connection = new DBConnection().GetConnection())
-            using (var command = new SqlCommand("SELECT Id_Role, Role FROM Roles", connection))
+            try
             {
-                connection.Open();
-                using (var reader = command.ExecuteReader())
+                var roles = new List<Role>();
+
+                using (var connection = new DBConnection().GetConnection())
+                using (var command = new SqlCommand("SELECT Id_Role, Role FROM Roles", connection))
                 {
-                    while (reader.Read())
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        roles.Add(new Role
+                        while (reader.Read())
                         {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
-                        });
+                            roles.Add(new Role
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1)
+                            });
+                        }
                     }
                 }
-            }
 
-            return roles;
+                if (roles.Count > 0)
+                {
+                    throw new EntityNotFoundException("No se encontraron roles.");
+                }
+                return roles;
+            }
+            catch (EntityNotFoundException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryErrors("Hubo un problema con el repositorio",ex);
+            }
         }
 
         public Role GetById(int id)
         {
-            Role role = null;
-
-            using (var connection = new DBConnection().GetConnection())
-            using (var command = new SqlCommand("SELECT Id_Role, Role FROM Roles WHERE Id_Role = @Id", connection))
+            try
             {
-                command.Parameters.AddWithValue("@Id", id);
-                connection.Open();
+                Role role = null;
 
-                using (var reader = command.ExecuteReader())
+                using (var connection = new DBConnection().GetConnection())
+                using (var command = new SqlCommand("SELECT Id_Role, Role FROM Roles WHERE Id_Role = @Id", connection))
                 {
-                    if (reader.Read())
+                    command.Parameters.AddWithValue("@Id", id);
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        role = new Role
+                        if (reader.Read())
                         {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
-                        };
+                            role = new Role
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1)
+                            };
+                        }
                     }
                 }
-            }
+                if(role == null)
+                {
+                    throw new EntityNotFoundException("No se encontro el Rol.");
+                }
 
-            return role;
+                return role;
+            }
+            catch (SqlException ex)
+            {
+                throw new RepositoryErrors("Error de la base de datos.");
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryErrors("Error inesperado.",ex);
+            }
         }
 
         public void Add(Role role)
         {
-            using (var connection = new DBConnection().GetConnection())
-            using (var command = new SqlCommand("sp_InsertRole", connection))
+            try
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@Role", role.Name);
+                using (var connection = new DBConnection().GetConnection())
+                using (var command = new SqlCommand("sp_InsertRole", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Role", role.Name);
 
-                connection.Open();
-                command.ExecuteNonQuery();
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryErrors("Hubo un problema con el repositorio", ex);
             }
         }
 
         public void Update(Role role)
         {
-            using (var connection = new DBConnection().GetConnection())
-            using (var command = new SqlCommand("sp_UpdateRole", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@Id", role.Id);
-                command.Parameters.AddWithValue("@Role", role.Name);
+            try 
+            { 
+                using (var connection = new DBConnection().GetConnection())
+                using (var command = new SqlCommand("sp_UpdateRole", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", role.Id);
+                    command.Parameters.AddWithValue("@Role", role.Name);
 
-                connection.Open();
-                command.ExecuteNonQuery();
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryErrors("Hubo un problema con el repositorio", ex);
             }
         }
 
         public void Delete(int id)
         {
-            using (var connection = new DBConnection().GetConnection())
-            using (var command = new SqlCommand("sp_DeleteRole", connection))
+            try
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@Id", id);
+                using (var connection = new DBConnection().GetConnection())
+                using (var command = new SqlCommand("sp_DeleteRole", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", id);
 
-                connection.Open();
-                command.ExecuteNonQuery();
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryErrors("Hubo un problema con el repositorio", ex);
             }
         }
     }

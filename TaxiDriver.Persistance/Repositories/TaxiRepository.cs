@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using TaxiDriver.Domain.Entitys;
+using TaxiDriver.Domain.Interfaces.Entities;
 using TaxiDriver.Domain.Interfaces.Repositorys;
 using TaxiDriver.Persistance.Context;
+using TaxiDriver.Persistance.Exceptions;
 
 namespace TaxiDriver.Persistence.Repositories
 {
@@ -107,6 +109,10 @@ namespace TaxiDriver.Persistence.Repositories
                         });
                     }
                 }
+            }
+            if (taxis.Count < 0)
+            {
+                throw new EntityNotFoundException($"No se encontraron los taxis del usuario.");
             }
             return taxis;
         }
